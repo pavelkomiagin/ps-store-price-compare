@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS Store Выгодомер</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <div class="popup__top">
+        <div>
+          <p class="popup__eyebrow">PS Store Выгодомер</p>
+          <h1 class="popup__title">Где купить дешевле</h1>
+        </div>
+        <span class="popup__version">v0.4</span>
+      </div>
+
+      <p class="popup__hint">Рублевая цена считается автоматически по актуальным номиналам подарочных карт. Здесь вы выбираете только страны для сравнения.</p>
+
+      <section class="popup__section" aria-label="Страны для сравнения">
+        <div class="popup__section-head">
+          <h2 class="popup__section-title">Сравнивать страны</h2>
+          <span class="popup__section-note">Можно включать и выключать</span>
+        </div>
+        <div class="popup__checks">
+          <label class="popup__check">
+            <input id="store-tr" name="selectedStoreIds" type="checkbox" value="tr">
+            <span>Турция</span>
+          </label>
+          <label class="popup__check">
+            <input id="store-in" name="selectedStoreIds" type="checkbox" value="in">
+            <span>Индия</span>
+          </label>
+          <label class="popup__check">
+            <input id="store-pl" name="selectedStoreIds" type="checkbox" value="pl">
+            <span>Польша</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="popup__section popup__auto" aria-label="Автоматический расчет">
+        <div class="popup__section-head">
+          <h2 class="popup__section-title">Как считается цена</h2>
+          <span class="popup__section-note">Автоматически</span>
+        </div>
+        <p class="popup__auto-copy">Для каждой страны расширение берет живые предложения карт и подбирает самую дешевую комбинацию номиналов, которой хватает на покупку игры.</p>
+        <p class="popup__source">
+          Рублевая цена считается по стоимости карт пополнения кошелька с
+          <a href="https://igromir.yandex.ru/product/5-karta-popolneniya-playstation-store" target="_blank" rel="noopener noreferrer">Игромира Яндекса</a>.
+        </p>
+      </section>
+
+      <section class="popup__section popup__cache" aria-label="Актуальность данных">
+        <div class="popup__section-head">
+          <h2 class="popup__section-title">Актуальность данных</h2>
+          <span class="popup__section-note">Кэш на 1 час</span>
+        </div>
+        <div class="popup__cache-row">
+          <span>Цены игр</span>
+          <strong id="comparison-cache-time">еще не загружались</strong>
+        </div>
+        <div class="popup__cache-row">
+          <span>Карты Игромира</span>
+          <strong id="offers-cache-time">еще не загружались</strong>
+        </div>
+      </section>
+
+      <form id="settings-form" class="popup__form">
+        <div class="popup__actions">
+          <button type="submit" class="popup__button popup__button--primary">Сохранить</button>
+          <button type="button" id="reset-defaults" class="popup__button">По умолчанию</button>
+        </div>
+      </form>
+
+      <p id="status" class="popup__status" aria-live="polite"></p>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

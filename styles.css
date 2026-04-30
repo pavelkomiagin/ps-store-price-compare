@@ -1,0 +1,339 @@
+.pspc-host {
+  height: auto !important;
+}
+
+.pspc-product-page-host {
+  width: 100%;
+  max-width: 760px;
+}
+
+.pspc-panel {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(10, 14, 21, 0.96);
+  color: #f4f7fb;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  box-sizing: border-box;
+  container-type: inline-size;
+}
+
+.pspc-header {
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8cc4ff;
+}
+
+.pspc-status {
+  color: #d0d7e2;
+}
+
+.pspc-status-detail {
+  margin-top: 6px;
+  color: #8b98a8;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.pspc-list {
+  display: grid;
+  gap: 8px;
+}
+
+.pspc-store-card {
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pspc-store-card-cheapest {
+  border-color: rgba(142, 242, 157, 0.32);
+  background: rgba(142, 242, 157, 0.08);
+}
+
+.pspc-store-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pspc-store-top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.pspc-store-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pspc-store-name {
+  color: #eef4ff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pspc-line-value {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pspc-line-value + .pspc-line-value {
+  margin-top: 6px;
+}
+
+.pspc-line-value-only {
+  width: 100%;
+}
+
+.pspc-price-pair {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pspc-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(36, 159, 92, 0.22);
+  color: #9ff5ba;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.pspc-pill-muted {
+  background: rgba(255, 255, 255, 0.08);
+  color: #b1bfce;
+}
+
+.pspc-best {
+  color: #bdf7c0;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.pspc-store-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(140, 196, 255, 0.3);
+  background: rgba(140, 196, 255, 0.08);
+  color: #8cc4ff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+.pspc-store-link:hover,
+.pspc-store-link:focus-visible {
+  background: rgba(140, 196, 255, 0.14);
+  border-color: rgba(140, 196, 255, 0.5);
+  color: #cbe5ff;
+}
+
+.pspc-price-old {
+  color: #8b98a8;
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+
+.pspc-price-now {
+  color: #eef4ff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pspc-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pspc-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid rgba(140, 196, 255, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: #8cc4ff;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: help;
+}
+
+.pspc-tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 20;
+  display: none;
+  width: min(240px, 72vw);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 14, 21, 0.98);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  color: #eef4ff;
+  text-align: left;
+}
+
+.pspc-tooltip-wrap:hover .pspc-tooltip,
+.pspc-tooltip-wrap:focus-within .pspc-tooltip {
+  display: block;
+}
+
+.pspc-tooltip-block {
+  display: grid;
+  gap: 4px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.pspc-tooltip-block + .pspc-tooltip-block {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pspc-tooltip-title {
+  color: #8cc4ff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pspc-tooltip-list {
+  margin: 2px 0 0;
+  padding-left: 14px;
+  color: #b9c5d4;
+}
+
+.pspc-store-card-cheapest .pspc-price-now,
+.pspc-store-card-cheapest .pspc-store-name,
+.pspc-store-card-cheapest .pspc-best {
+  color: #bdf7c0;
+}
+
+.pspc-footer {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  color: #f6c36f;
+  font-weight: 700;
+}
+
+@container (max-width: 240px) {
+  .pspc-panel {
+    margin-top: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 10px;
+  }
+
+  .pspc-header {
+    margin-bottom: 6px;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+  }
+
+  .pspc-list {
+    gap: 6px;
+  }
+
+  .pspc-store-card {
+    padding: 6px;
+    border-radius: 8px;
+  }
+
+  .pspc-store-top {
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .pspc-store-meta,
+  .pspc-store-top-actions {
+    gap: 4px;
+  }
+
+  .pspc-store-name {
+    font-size: 12px;
+  }
+
+  .pspc-line-value {
+    gap: 4px;
+  }
+
+  .pspc-line-value + .pspc-line-value {
+    margin-top: 4px;
+  }
+
+  .pspc-price-pair {
+    gap: 6px;
+  }
+
+  .pspc-pill,
+  .pspc-best {
+    font-size: 8px;
+  }
+
+  .pspc-store-link,
+  .pspc-help {
+    width: 15px;
+    height: 15px;
+    font-size: 9px;
+  }
+
+  .pspc-tooltip {
+    width: min(220px, 88vw);
+    padding: 8px;
+  }
+
+  .pspc-footer {
+    margin-top: 6px;
+    padding-top: 6px;
+    font-size: 10px;
+  }
+}

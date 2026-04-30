@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PS Store Выгодомер">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="10" x2="112" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1186ff"/>
+      <stop offset="0.55" stop-color="#0758c9"/>
+      <stop offset="1" stop-color="#063477"/>
+    </linearGradient>
+    <linearGradient id="bag" x1="38" y1="28" x2="92" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#d8e9ff"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="74" y1="38" x2="102" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd980"/>
+      <stop offset="1" stop-color="#ffad2f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#001b3f" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <circle cx="104" cy="24" r="22" fill="#ffffff" opacity="0.12"/>
+  <circle cx="21" cy="104" r="34" fill="#79c5ff" opacity="0.14"/>
+
+  <g filter="url(#shadow)">
+    <path d="M35 49c0-5.5 4.5-10 10-10h38c5.5 0 10 4.5 10 10l6 47c0 5.5-4.5 10-10 10H39c-5.5 0-10-4.5-10-10l6-47Z" fill="url(#bag)"/>
+    <path d="M49 42V35c0-9 6-15 15-15s15 6 15 15v7" fill="none" stroke="#0b4ea8" stroke-width="7" stroke-linecap="round"/>
+    <path d="M46 62h31" stroke="#0b4ea8" stroke-width="7" stroke-linecap="round"/>
+    <path d="M46 78h21" stroke="#0b4ea8" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <circle cx="86" cy="72" r="24" fill="#10233d"/>
+    <path d="M73 83l11-27 20-9-9 20-27 11 13-2-8 7Z" fill="url(#gold)"/>
+    <path d="M84 56l11 11" stroke="#fff7dc" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <circle cx="35" cy="34" r="13" fill="#10233d"/>
+    <text x="35" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff">₽</text>
+  </g>
+</svg>
