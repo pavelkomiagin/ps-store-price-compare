@@ -45,7 +45,7 @@ function bootstrap() {
       return;
     }
 
-    if (!changes.selectedStoreIds) {
+    if (!changes.selectedStoreIds && !changes.manualRates) {
       return;
     }
 
@@ -507,6 +507,10 @@ function renderRubTooltip(row) {
 }
 
 function renderRubTooltipBlock(title, quote) {
+  if (quote.source === "manual") {
+    return renderManualRubTooltipBlock(title, quote);
+  }
+
   const cards = quote.cards
     .map(
       (card) =>
@@ -536,6 +540,19 @@ function renderRubTooltipBlock(title, quote) {
       <span>Курс корзины: ${escapeHtml(formatRate(quote.effectiveBasketRate, quote.currency))}</span>
       <span>Курс покупки: ${escapeHtml(formatRate(quote.effectiveGameRate, quote.currency))}</span>
       <ul class="pspc-tooltip-list">${cards}</ul>
+    </span>
+  `;
+}
+
+function renderManualRubTooltipBlock(title, quote) {
+  const targetAmount = formatTooltipCurrency(quote.targetAmount, quote.currency, quote.currencyLocale);
+
+  return `
+    <span class="pspc-tooltip-block">
+      <span class="pspc-tooltip-title">${escapeHtml(title)}</span>
+      <span>Нужно: ${escapeHtml(targetAmount)}</span>
+      <span>Курс вручную: ${escapeHtml(formatRate(quote.rate, quote.currency))}</span>
+      <span>Итого: ${escapeHtml(quote.rubText)}</span>
     </span>
   `;
 }

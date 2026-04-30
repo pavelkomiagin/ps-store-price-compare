@@ -14,7 +14,8 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_SETTINGS = {
-  selectedStoreIds: ["tr", "in", "pl"]
+  selectedStoreIds: ["tr", "in", "pl"],
+  manualRates: {}
 };
 
 const STORE_BY_ID = {
@@ -134,7 +135,9 @@ async function handlePriceComparison(message) {
   const selectedStoreIds = normalizeSelectedStoreIds(settings.selectedStoreIds);
   const effectiveStoreIds =
     selectedStoreIds.length > 0 ? selectedStoreIds : DEFAULT_SETTINGS.selectedStoreIds;
-  const storeItemCacheKey = buildStoreItemCacheKey(parsed, effectiveStoreIds);
+  const manualRates = normalizeManualRates(settings.manualRates);
+  const rateCacheKey = buildRateCacheKey(effectiveStoreIds, manualRates);
+  const storeItemCacheKey = buildStoreItemCacheKey(parsed, effectiveStoreIds, rateCacheKey);
   const cachedStoreItemComparison = await readCacheEntry(
     STORAGE_KEYS.comparisons,
     comparisonCache,
@@ -160,7 +163,7 @@ async function handlePriceComparison(message) {
     throw new Error("Could not resolve PlayStation Store product");
   }
 
-  const comparisonCacheKey = buildComparisonCacheKey(productId, effectiveStoreIds);
+  const comparisonCacheKey = buildComparisonCacheKey(productId, effectiveStoreIds, rateCacheKey);
   const cachedComparison = await readCacheEntry(
     STORAGE_KEYS.comparisons,
     comparisonCache,
@@ -183,7 +186,7 @@ async function handlePriceComparison(message) {
   }
 
   const request = (async () => {
-    const result = await buildPriceComparison(productId, effectiveStoreIds);
+    const result = await buildPriceComparison(productId, effectiveStoreIds, manualRates);
     await writeCacheEntry(
       STORAGE_KEYS.comparisons,
       comparisonCache,
@@ -213,7 +216,7 @@ async function handlePriceComparison(message) {
   }
 }
 
-async function buildPriceComparison(productId, effectiveStoreIds) {
+async function buildPriceComparison(productId, effectiveStoreIds, manualRates = {}) {
   const rows = (
     await Promise.all(
       effectiveStoreIds.map(async (storeId) => {
@@ -222,12 +225,13 @@ async function buildPriceComparison(productId, effectiveStoreIds) {
           return null;
         }
 
+        const manualRate = manualRates[storeId] ?? null;
         const [price, offers] = await Promise.all([
           fetchPsStorePrice(productId, storeMeta),
-          fetchGiftCardOffers(storeMeta)
+          manualRate ? Promise.resolve([]) : fetchGiftCardOffers(storeMeta)
         ]);
 
-        return buildStoreRow(storeMeta, price, offers);
+        return buildStoreRow(storeMeta, price, offers, manualRate);
       })
     )
   ).filter(Boolean);
@@ -251,11 +255,12 @@ async function preloadGiftCardOffers() {
   const selectedStoreIds = normalizeSelectedStoreIds(settings.selectedStoreIds);
   const effectiveStoreIds =
     selectedStoreIds.length > 0 ? selectedStoreIds : DEFAULT_SETTINGS.selectedStoreIds;
+  const manualRates = normalizeManualRates(settings.manualRates);
 
   await Promise.all(
     effectiveStoreIds.map(async (storeId) => {
       const storeMeta = STORE_BY_ID[storeId];
-      if (!storeMeta) {
+      if (!storeMeta || manualRates[storeId]) {
         return;
       }
 
@@ -291,18 +296,29 @@ async function clearCache() {
   await chrome.storage.local.remove(Object.values(STORAGE_KEYS));
 }
 
-function buildComparisonCacheKey(productId, storeIds) {
-  return `${productId}:${[...storeIds].sort().join(",")}`;
+function buildComparisonCacheKey(productId, storeIds, rateCacheKey) {
+  return `${productId}:${[...storeIds].sort().join(",")}:${rateCacheKey}`;
 }
 
-function buildStoreItemCacheKey(parsedStoreUrl, storeIds) {
+function buildStoreItemCacheKey(parsedStoreUrl, storeIds, rateCacheKey) {
   const storesKey = [...storeIds].sort().join(",");
   const itemKey =
     parsedStoreUrl.type === "product"
       ? `product:${parsedStoreUrl.productId}`
       : `concept:${parsedStoreUrl.locale}:${parsedStoreUrl.conceptId}`;
 
-  return `${itemKey}:${storesKey}`;
+  return `${itemKey}:${storesKey}:${rateCacheKey}`;
+}
+
+function buildRateCacheKey(storeIds, manualRates) {
+  const parts = [...storeIds]
+    .sort()
+    .map((storeId) => {
+      const rate = manualRates[storeId];
+      return rate ? `${storeId}=${rate}` : `${storeId}=auto`;
+    });
+
+  return `rates:${parts.join(",")}`;
 }
 
 async function readCacheEntry(storageKey, memoryCache, cacheKey, ttlMs) {
@@ -402,7 +418,7 @@ function normalizeFreshIsoTimestamp(value, now = Date.now()) {
   return new Date(timestamp).toISOString();
 }
 
-function buildStoreRow(storeMeta, price, offers) {
+function buildStoreRow(storeMeta, price, offers, manualRate = null) {
   if (!price) {
     return {
       storeId: storeMeta.id,
@@ -419,10 +435,10 @@ function buildStoreRow(storeMeta, price, offers) {
     Number.isFinite(price.currentAmount) ? price.currentAmount : originalAmount
   );
   const hasDiscount = currentAmount < originalAmount;
-  const originalRubQuote = buildRubQuote(originalAmount, offers, storeMeta);
+  const originalRubQuote = buildRubQuote(originalAmount, offers, storeMeta, manualRate);
   const currentRubQuote =
     hasDiscount || !originalRubQuote
-      ? buildRubQuote(currentAmount, offers, storeMeta)
+      ? buildRubQuote(currentAmount, offers, storeMeta, manualRate)
       : originalRubQuote;
 
   return {
@@ -437,15 +453,19 @@ function buildStoreRow(storeMeta, price, offers) {
     currentText: formatCurrency(currentAmount, storeMeta.currency, storeMeta.currencyLocale),
     originalRubAmount: originalRubQuote?.rubAmount ?? null,
     currentRubAmount: currentRubQuote?.rubAmount ?? null,
-    originalRubText: originalRubQuote?.rubText ?? "Нет данных карт",
-    currentRubText: currentRubQuote?.rubText ?? "Нет данных карт",
+    originalRubText: originalRubQuote?.rubText ?? "Нет данных курса",
+    currentRubText: currentRubQuote?.rubText ?? "Нет данных курса",
     originalRubQuote,
     currentRubQuote,
     hasDiscount
   };
 }
 
-function buildRubQuote(targetAmount, offers, storeMeta) {
+function buildRubQuote(targetAmount, offers, storeMeta, manualRate = null) {
+  if (Number.isFinite(manualRate) && manualRate > 0) {
+    return buildManualRubQuote(targetAmount, manualRate, storeMeta);
+  }
+
   if (!Array.isArray(offers) || offers.length === 0) {
     return null;
   }
@@ -471,6 +491,23 @@ function buildRubQuote(targetAmount, offers, storeMeta) {
       rubAmount: card.rubAmount,
       rubText: formatCurrency(card.rubAmount, "RUB", "ru-RU")
     })),
+    currency: storeMeta.currency,
+    currencyLocale: storeMeta.currencyLocale
+  };
+}
+
+function buildManualRubQuote(targetAmount, manualRate, storeMeta) {
+  const rubAmount = roundCurrency(targetAmount * manualRate);
+
+  return {
+    source: "manual",
+    rate: manualRate,
+    rubAmount,
+    rubText: formatCurrency(rubAmount, "RUB", "ru-RU"),
+    targetAmount: roundCurrency(targetAmount),
+    effectiveBasketRate: manualRate,
+    effectiveGameRate: manualRate,
+    cards: [],
     currency: storeMeta.currency,
     currencyLocale: storeMeta.currencyLocale
   };
@@ -1408,8 +1445,39 @@ function normalizeSelectedStoreIds(value) {
   return [...new Set(normalized)];
 }
 
+function normalizeManualRates(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+
+  return Object.entries(value).reduce((rates, [storeId, rate]) => {
+    const normalizedStoreId = String(storeId).toLowerCase();
+    const normalizedRate = normalizeManualRateValue(rate);
+    const roundedRate = roundRate(normalizedRate);
+
+    if (
+      Object.hasOwn(STORE_BY_ID, normalizedStoreId) &&
+      Number.isFinite(roundedRate) &&
+      roundedRate > 0
+    ) {
+      rates[normalizedStoreId] = roundedRate;
+    }
+
+    return rates;
+  }, {});
+}
+
+function normalizeManualRateValue(value) {
+  const normalized = String(value).replace(/\s+/g, "").replace(",", ".");
+  return Number(normalized);
+}
+
 function roundCurrency(value) {
   return Number(Number(value).toFixed(2));
+}
+
+function roundRate(value) {
+  return Number(Number(value).toFixed(4));
 }
 
 function formatCurrency(amount, currency, locale) {

@@ -100,6 +100,66 @@ body {
   accent-color: #4ea7ff;
 }
 
+.popup__rates {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #273240;
+  background: #141b23;
+}
+
+.popup__rate-list {
+  display: grid;
+  gap: 8px;
+}
+
+.popup__rate-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #d8e0ea;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.popup__rate-control {
+  display: grid;
+  grid-template-columns: minmax(0, 78px) 42px;
+  align-items: center;
+  gap: 6px;
+  color: #9daabd;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.popup__rate-control input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid #2a3442;
+  border-radius: 8px;
+  background: #0f151d;
+  color: #edf3fb;
+  font: inherit;
+  text-align: right;
+}
+
+.popup__rate-control input::placeholder {
+  color: #667386;
+}
+
+.popup__rate-control input:focus {
+  border-color: #4ea7ff;
+  outline: 2px solid rgba(78, 167, 255, 0.2);
+}
+
+.popup__rate-note {
+  margin: 9px 0 0;
+  color: #9daabd;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .popup__auto {
   padding: 12px;
   border-radius: 12px;

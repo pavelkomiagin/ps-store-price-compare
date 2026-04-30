@@ -16,7 +16,7 @@
         <span class="popup__version">v1.0</span>
       </div>
 
-      <p class="popup__hint">Рублевая цена считается автоматически по актуальным номиналам подарочных карт. Здесь вы выбираете только страны для сравнения.</p>
+      <p class="popup__hint">Рублевая цена считается автоматически по актуальным номиналам подарочных карт. Для любой страны можно задать свой курс.</p>
 
       <section class="popup__section" aria-label="Страны для сравнения">
         <div class="popup__section-head">
@@ -37,6 +37,37 @@
             <span>Польша</span>
           </label>
         </div>
+      </section>
+
+      <section class="popup__section popup__rates" aria-label="Ручной курс">
+        <div class="popup__section-head">
+          <h2 class="popup__section-title">Ручной курс</h2>
+          <span class="popup__section-note">₽ за 1 единицу</span>
+        </div>
+        <div class="popup__rate-list">
+          <label class="popup__rate-row" for="manual-rate-tr">
+            <span>Турция</span>
+            <span class="popup__rate-control">
+              <input id="manual-rate-tr" name="manualRates" data-store-id="tr" type="text" inputmode="decimal" placeholder="авто" autocomplete="off">
+              <span>₽/TRY</span>
+            </span>
+          </label>
+          <label class="popup__rate-row" for="manual-rate-in">
+            <span>Индия</span>
+            <span class="popup__rate-control">
+              <input id="manual-rate-in" name="manualRates" data-store-id="in" type="text" inputmode="decimal" placeholder="авто" autocomplete="off">
+              <span>₽/INR</span>
+            </span>
+          </label>
+          <label class="popup__rate-row" for="manual-rate-pl">
+            <span>Польша</span>
+            <span class="popup__rate-control">
+              <input id="manual-rate-pl" name="manualRates" data-store-id="pl" type="text" inputmode="decimal" placeholder="авто" autocomplete="off">
+              <span>₽/PLN</span>
+            </span>
+          </label>
+        </div>
+        <p class="popup__rate-note">Пустое поле оставляет расчет по картам Игромира.</p>
       </section>
 
       <section class="popup__section popup__auto" aria-label="Автоматический расчет">

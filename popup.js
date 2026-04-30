@@ -1,9 +1,11 @@
 const DEFAULT_SETTINGS = {
-  selectedStoreIds: ["tr", "in", "pl"]
+  selectedStoreIds: ["tr", "in", "pl"],
+  manualRates: {}
 };
 
 const form = document.getElementById("settings-form");
 const storeCheckboxes = [...document.querySelectorAll('input[name="selectedStoreIds"]')];
+const manualRateInputs = [...document.querySelectorAll('input[name="manualRates"]')];
 const resetButton = document.getElementById("reset-defaults");
 const clearCacheButton = document.getElementById("clear-cache");
 const statusNode = document.getElementById("status");
@@ -26,22 +28,34 @@ async function handleSubmit(event) {
   event.preventDefault();
 
   const selectedStoreIds = getSelectedStoreIds();
+  const manualRatesResult = getManualRates();
+
   if (selectedStoreIds.length === 0) {
     setStatus("Выберите хотя бы одну страну для сравнения.", true);
     return;
   }
 
-  await chrome.storage.sync.set({ selectedStoreIds });
-  applyValues({ selectedStoreIds });
+  if (!manualRatesResult.ok) {
+    setStatus(manualRatesResult.error, true);
+    return;
+  }
+
+  const settings = {
+    selectedStoreIds,
+    manualRates: manualRatesResult.value
+  };
+
+  await chrome.storage.sync.set(settings);
+  applyValues(settings);
   await refreshCacheStatus();
-  setStatus("Настройки сохранены. Цены по картам считаются автоматически.");
+  setStatus("Настройки сохранены.");
 }
 
 async function handleReset() {
   await chrome.storage.sync.set(DEFAULT_SETTINGS);
   applyValues(DEFAULT_SETTINGS);
   await refreshCacheStatus();
-  setStatus("Список стран возвращен к значениям по умолчанию.");
+  setStatus("Страны возвращены к значениям по умолчанию, ручной курс очищен.");
 }
 
 async function handleClearCache() {
@@ -64,9 +78,14 @@ async function handleClearCache() {
 
 function applyValues(values) {
   const selectedStoreIds = normalizeSelectedStoreIds(values.selectedStoreIds);
+  const manualRates = normalizeManualRates(values.manualRates);
 
   for (const checkbox of storeCheckboxes) {
     checkbox.checked = selectedStoreIds.includes(checkbox.value);
+  }
+
+  for (const input of manualRateInputs) {
+    input.value = formatManualRateInput(manualRates[input.dataset.storeId]);
   }
 }
 
@@ -86,6 +105,74 @@ function normalizeSelectedStoreIds(value) {
     .filter((item) => ["tr", "in", "pl"].includes(item));
 
   return normalized.length > 0 ? [...new Set(normalized)] : DEFAULT_SETTINGS.selectedStoreIds;
+}
+
+function getManualRates() {
+  const manualRates = {};
+
+  for (const input of manualRateInputs) {
+    const rawValue = input.value.trim();
+    if (!rawValue) {
+      continue;
+    }
+
+    const rate = parseManualRate(rawValue);
+    if (!rate) {
+      return {
+        ok: false,
+        error: "Введите ручной курс положительным числом или оставьте поле пустым."
+      };
+    }
+
+    manualRates[input.dataset.storeId] = rate;
+  }
+
+  return {
+    ok: true,
+    value: manualRates
+  };
+}
+
+function normalizeManualRates(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+
+  return Object.entries(value).reduce((rates, [storeId, rate]) => {
+    const normalizedStoreId = String(storeId).toLowerCase();
+    const normalizedRate = normalizeManualRateValue(rate);
+    const roundedRate = roundRate(normalizedRate);
+
+    if (
+      ["tr", "in", "pl"].includes(normalizedStoreId) &&
+      Number.isFinite(roundedRate) &&
+      roundedRate > 0
+    ) {
+      rates[normalizedStoreId] = roundedRate;
+    }
+
+    return rates;
+  }, {});
+}
+
+function parseManualRate(value) {
+  const parsed = normalizeManualRateValue(value);
+  const rounded = roundRate(parsed);
+
+  return Number.isFinite(rounded) && rounded > 0 ? rounded : null;
+}
+
+function normalizeManualRateValue(value) {
+  const normalized = String(value).replace(/\s+/g, "").replace(",", ".");
+  return Number(normalized);
+}
+
+function roundRate(value) {
+  return Number(Number(value).toFixed(4));
+}
+
+function formatManualRateInput(value) {
+  return Number.isFinite(value) && value > 0 ? String(value).replace(".", ",") : "";
 }
 
 function setStatus(message, isError = false) {

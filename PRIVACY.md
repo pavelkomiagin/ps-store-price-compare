@@ -4,7 +4,7 @@ PS Store Выгодомер is a local Chrome extension. It does not use a separ
 
 ## What the extension stores
 
-- Selected comparison countries are stored in `chrome.storage.sync`.
+- Selected comparison countries and optional manual exchange rates are stored in `chrome.storage.sync`.
 - Cached PS Store prices and gift card offers are stored in `chrome.storage.local`.
 - Cache entries are used to reduce repeated requests and are refreshed automatically after about 1 hour.
 

@@ -1,10 +1,11 @@
-# Changelog
+# История изменений
 
 ## 1.0 - 2026-04-30
 
-- Added price comparison for Turkey, India, and Poland.
-- Added ruble estimates based on PlayStation Store gift card offers.
-- Added automatic gift card basket calculation.
-- Added extension popup settings for country selection.
-- Added local browser cache for prices and gift card offers.
-- Added privacy, unofficial-project, and publishing notes.
+- Добавлено сравнение цен для Турции, Индии и Польши.
+- Добавлен расчет рублевой цены по предложениям карт пополнения PlayStation Store.
+- Добавлен автоматический подбор корзины подарочных карт.
+- Добавлены настройки расширения для выбора стран.
+- Добавлен ручной курс рубля для каждой страны.
+- Добавлен локальный кеш цен и предложений карт.
+- Добавлены документы о приватности, неофициальном статусе проекта и публикации.
