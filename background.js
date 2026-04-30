@@ -108,6 +108,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
+  if (message?.type === "CLEAR_CACHE") {
+    clearCache()
+      .then(() => sendResponse({ ok: true }))
+      .catch((error) =>
+        sendResponse({
+          ok: false,
+          error: error instanceof Error ? error.message : String(error)
+        })
+      );
+
+    return true;
+  }
+
   return false;
 });
 
@@ -267,6 +280,15 @@ async function getCacheStatus() {
       now
     )
   };
+}
+
+async function clearCache() {
+  localePriceCache.clear();
+  comparisonCache.clear();
+  offersCache.clear();
+  conceptProductCache.clear();
+
+  await chrome.storage.local.remove(Object.values(STORAGE_KEYS));
 }
 
 function buildComparisonCacheKey(productId, storeIds) {

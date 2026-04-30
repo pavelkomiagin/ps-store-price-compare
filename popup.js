@@ -5,6 +5,7 @@ const DEFAULT_SETTINGS = {
 const form = document.getElementById("settings-form");
 const storeCheckboxes = [...document.querySelectorAll('input[name="selectedStoreIds"]')];
 const resetButton = document.getElementById("reset-defaults");
+const clearCacheButton = document.getElementById("clear-cache");
 const statusNode = document.getElementById("status");
 const comparisonCacheTimeNode = document.getElementById("comparison-cache-time");
 const offersCacheTimeNode = document.getElementById("offers-cache-time");
@@ -18,6 +19,7 @@ async function initialize() {
 
   form.addEventListener("submit", handleSubmit);
   resetButton.addEventListener("click", handleReset);
+  clearCacheButton.addEventListener("click", handleClearCache);
 }
 
 async function handleSubmit(event) {
@@ -40,6 +42,24 @@ async function handleReset() {
   applyValues(DEFAULT_SETTINGS);
   await refreshCacheStatus();
   setStatus("Список стран возвращен к значениям по умолчанию.");
+}
+
+async function handleClearCache() {
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "CLEAR_CACHE"
+    });
+
+    if (!response?.ok) {
+      setStatus("Не удалось очистить кеш.", true);
+      return;
+    }
+
+    await refreshCacheStatus();
+    setStatus("Кеш цен и карт очищен.");
+  } catch {
+    setStatus("Не удалось очистить кеш.", true);
+  }
 }
 
 function applyValues(values) {

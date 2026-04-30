@@ -195,6 +195,13 @@ body {
   border-color: #1978d6;
 }
 
+.popup__button--compact {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
 .popup__status {
   min-height: 20px;
   margin: 2px 0 0;
