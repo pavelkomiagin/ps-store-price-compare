@@ -8,6 +8,9 @@ const STORE_LOCALE_BY_ID = {
   in: "en-in",
   pl: "pl-pl"
 };
+const STORE_LINK_LOCALE_BY_ID = {
+  pl: "en-pl"
+};
 
 const observer = new MutationObserver(() => {
   scheduleScan();
@@ -470,7 +473,7 @@ function buildStoreLink(row, productId) {
     return null;
   }
 
-  const locale = row.locale || STORE_LOCALE_BY_ID[row.storeId];
+  const locale = STORE_LINK_LOCALE_BY_ID[row.storeId] || row.locale || STORE_LOCALE_BY_ID[row.storeId];
   if (!locale) {
     return null;
   }
